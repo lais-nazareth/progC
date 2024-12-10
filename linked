@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Processos{
+          int num_processo;
+          int tempo;
+          struct Processos* prox;
+};
+
+typedef struct Processos tProcesso;
+
+void InsereElem(tProcesso** inicio, tProcesso** final, int proc, int temp){
+          tProcesso *elem;
+          elem = (tProcesso*)malloc(sizeof(tProcesso));
+          elem -> num_processo = proc;
+                    elem -> tempo = temp;
+                    elem -> prox = NULL;
+          if ((*inicio) == NULL){
+                (*inicio) = elem;
+                (*final) = elem;
+          }
+          else{
+                (*final) -> prox = elem;
+                (*final) = elem;
+          }
+}
+
+tProcesso *RemoveElem(tProcesso* inicio){
+          tProcesso* lixo;
+
+          if (inicio != NULL){
+                    lixo = inicio;
+                    inicio = lixo;
+                    inicio  = inicio -> prox;
+                    free(lixo);
+          }
+          return inicio;
+}
+
+int main(void){
+          tProcesso *inicio = NULL, *final = NULL;
+          int proc = 1, temp;
+          while (proc > 0) {
+            printf("\nDigite o numero do processo: ");
+            scanf("%d", &proc);
+            if (proc <= 0) {
+                break;
+            }
+          printf("\nDigite o tempo de processamento: ");
+          scanf("%d", &temp);
+          InsereElem(&inicio, &final, proc, temp);
+          }
+          
+          while (inicio!=NULL){
+                    if (inicio->tempo <= 2){
+                              printf("\n#executando %d (%dut)", inicio->num_processo, inicio->tempo);
+                              inicio = RemoveElem(inicio);
+                    }
+                    else{
+                              printf("\n#executando %d (2ut)", inicio->num_processo);
+                              InsereElem(&inicio, &final, inicio->num_processo, inicio->tempo-2);
+                              inicio = RemoveElem(inicio);
+                    }
+          }
+
+          return 0;
+
+}
